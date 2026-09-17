@@ -1,0 +1,49 @@
+# Banbu PR One Page
+
+一个纯前端、无需 API Key 的 C/Q/S/R 稿件拆解工作台。所有稿件、标注与评分默认只保存在当前浏览器。
+
+## 使用顺序
+
+1. 导入 Word（`.docx`）、TXT、Markdown，或粘贴全文。Word 中已有的红、黄、绿、紫字体色、荧光笔或底纹会分别还原为 C、Q、S、R；未着色内容保持留白。
+2. 系统先按《稿件初次判定与 CQSR 标注规范》生成文章主类型、辅类型和 30 秒主命题候选，再运行逐句初判。主命题候选可人工修改。
+3. 初判同时保存主标签、备选标签、S/R 二级标签、成熟度、分类置信度、Banbu 相关性和 One Page 收录置信度。R 会继续细分为团队 Proof、What We Believe、What We Have Done、早期方向 Proof、What Are We Doing、趋势 Proof 与团队名字 Proof；低置信、冲突句和高风险证明集中提示人工复核。
+4. 在“全文标注”中人工修改 C/Q/S/R；点击 `□` 可将句子设为留白。人工结果和 Word 颜色标注会自动锁定，后续初判不会覆盖。
+5. 进入“分类表格”，已标注句会自动按 `C / Q / S1 / S2 / S3 / R` 横向排列，无需再次复制。
+6. 横向表格支持修改分类、解决方案层级和原句，也可以复制单列或一键复制整张 TSV 表格到 Excel、飞书表格等工具。
+7. 系统按配额自动推荐 One Page 原句；使用“收录”复选框可人工增删。表格修改会同步回原文，并直接用于 One Page。
+8. 所有建立过分析的稿件会自动进入当前浏览器的“稿件库”，可重新打开继续查看和修改。
+9. 打开稿件库中的全文后，可以导入 Word、TXT、MD 格式的已有 One Page。系统会识别 C/Q/S1/S2/S3 和七类 R，将 One Page 内容匹配回原文并自动生成可视化标注与横向分类表；原有人工标注不会被覆盖。
+10. 完成七项评分，生成可编辑的 One Page，并导出标准 `.docx` Word、PDF 或 JSON 分析项目。DOCX 会保留主命题、CQSR 色块和七类 Why Me 结构，可在 Word、WPS 中继续编辑。
+
+## 分类颜色
+
+- C Common：红色
+- Q Question：黄色
+- S Solution：绿色
+- R Reason / Why Me：紫色
+
+## Reason / Why Me 二级结构
+
+- Direct evidence / 团队 Proof
+- What We Believe
+- What We Have Done
+- 早期方向 Proof
+- What Are We Doing
+- 趋势 Proof
+- 团队名字 Proof
+
+## 本地运行
+
+在本目录运行：
+
+```bash
+python3 -m http.server 8770
+```
+
+然后打开 `http://127.0.0.1:8770/`。
+
+## 部署
+
+这是静态网站。将整个 `cqsr-onepage` 目录上传到 GitHub Pages、Netlify 或任意静态网站托管即可。不要只上传 `index.html`，还需要一并保留 `assets` 与 `vendor` 目录。
+
+稿件库使用浏览器本地存储，不会自动同步到另一台设备。跨设备继续编辑时，请导出并导入 JSON 分析项目。
