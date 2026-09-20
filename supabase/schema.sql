@@ -114,6 +114,23 @@ returns boolean language sql stable security definer set search_path = public as
   select exists(select 1 from public.workspace_members m where m.workspace_id = target and m.user_id = auth.uid() and m.role in ('reviewer','admin'));
 $$;
 
+-- Workspace bootstrap and member management. The first signed-in user creates
+-- the workspace and is automatically allowed to add the review team.
+create policy "authenticated users can create own workspace" on public.workspaces
+  for insert to authenticated with check (created_by = auth.uid());
+create policy "workspace creators can update own workspace" on public.workspaces
+  for update using (created_by = auth.uid()) with check (created_by = auth.uid());
+create policy "members can read workspace members" on public.workspace_members
+  for select using (public.is_workspace_member(workspace_id));
+create policy "workspace creators can add members" on public.workspace_members
+  for insert with check (
+    exists(select 1 from public.workspaces w where w.id = workspace_id and w.created_by = auth.uid())
+    or (user_id = auth.uid() and public.is_workspace_member(workspace_id))
+  );
+create policy "workspace admins can manage members" on public.workspace_members
+  for update using (exists(select 1 from public.workspace_members m where m.workspace_id = workspace_id and m.user_id = auth.uid() and m.role = 'admin'))
+  with check (exists(select 1 from public.workspace_members m where m.workspace_id = workspace_id and m.user_id = auth.uid() and m.role = 'admin'));
+
 create policy "members can read workspaces" on public.workspaces for select using (public.is_workspace_member(id));
 create policy "members can read documents" on public.documents for select using (public.is_workspace_member(workspace_id));
 create policy "members can write documents" on public.documents for insert with check (public.is_workspace_member(workspace_id));
