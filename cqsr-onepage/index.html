@@ -47,6 +47,7 @@
       <button class="btn" id="openLibrary">稿件库</button>
       <button class="btn" id="openCorpus">语料库</button>
       <button class="btn" id="openCollaboration">协作审阅</button>
+      <button class="btn" id="openCloudAuth">云端登录</button>
       <button class="btn" id="saveProject">导出分析项目</button>
       <button class="btn" id="loadProject">导入分析项目</button>
       <button class="btn primary" id="openOnePage">生成 One Page</button>
@@ -264,6 +265,15 @@
   </div>
 </div>
 
+<div class="modal-backdrop" id="cloudAuthModal">
+  <div class="modal ingest">
+    <div class="modal-head"><div><h2>团队云端登录</h2><p>登录后才能访问团队协作空间。网页只保存登录会话，不保存邮箱密码。</p></div><button class="close" data-close>×</button></div>
+    <div class="field"><label>团队邮箱</label><input id="cloudEmail" type="email" placeholder="name@company.com"></div>
+    <p class="hint" id="cloudAuthStatus">输入邮箱后发送一次性登录链接。</p>
+    <div class="drop"><span style="flex:1"></span><button class="btn primary" id="sendCloudMagicLink">发送登录链接</button><button class="btn hidden" id="cloudLogout">退出登录</button></div>
+  </div>
+</div>
+
 <div class="modal-backdrop" id="onePageModal">
   <div class="modal onepage-modal">
     <div class="modal-head"><div><h2>One Page</h2><p>由当前精选句自动生成，内容可继续修改或删除。</p></div><button class="close" data-close>×</button></div>
@@ -278,6 +288,7 @@
 <div class="toast" id="toast"></div>
 
 <script src="storage.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 (async()=>{
 await banbuStorage.ready;
@@ -520,6 +531,11 @@ function applyImportedOnePage(){if(!state.segments.length){showToast('请先打�
 async function importOnePageDocument(file){if(!file)return;$('#onePageFileName').textContent=file.name;try{if(file.name.toLowerCase().endsWith('.docx')){if(typeof mammoth==='undefined')throw new Error('Word 读取组件未加载');const result=await mammoth.extractRawText({arrayBuffer:await file.arrayBuffer()});$('#onePageDraft').value=result.value;showToast('One Page Word 已读取，可开始匹配')}else{$('#onePageDraft').value=await file.text();showToast('One Page 已读取，可开始匹配')}}catch(error){console.error(error);showToast('One Page 文件读取失败，请改用粘贴内容')}}
 function openOnePageImport(){if(!state.segments.length){showToast('请先导入或从稿件库打开完整原稿');return}renderOnePageMatchReport();$('#onePageImportModal').classList.add('show');setTimeout(()=>$('#onePageDraft').focus(),0)}
 const COLLAB_KEY='banbu-cqsr-collab-v1',collabLabels=['C','Q','S','R','X'];
+const SUPABASE_URL='https://tdqqmbocdypcboyxbbfy.supabase.co',SUPABASE_PUBLISHABLE_KEY='sb_publishable_l4TvK3awXAeXgnO2CqEgLw_iYmFOAsO';let supabaseClient=null,cloudUser=null;
+function initCloud(){try{if(globalThis.supabase?.createClient){supabaseClient=globalThis.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY);supabaseClient.auth.getSession().then(({data})=>{cloudUser=data.session?.user||null;updateCloudAuthUI()});supabaseClient.auth.onAuthStateChange((_event,session)=>{cloudUser=session?.user||null;updateCloudAuthUI()})}}catch(error){console.warn('cloud auth unavailable',error)}}
+function updateCloudAuthUI(){const button=$('#openCloudAuth'),status=$('#cloudAuthStatus'),logout=$('#cloudLogout');if(!button)return;if(cloudUser){button.textContent='云端：'+(cloudUser.email||'已登录');if(status)status.textContent=`已登录：${cloudUser.email||''}。下一步可同步当前协作稿件。`;if(logout)logout.classList.remove('hidden')}else{button.textContent='云端登录';if(status)status.textContent='输入邮箱后发送一次性登录链接。';if(logout)logout.classList.add('hidden')}}
+async function sendCloudMagicLink(){if(!supabaseClient){showToast('云端组件尚未加载，请刷新页面');return}const email=$('#cloudEmail').value.trim();if(!email){showToast('请先填写团队邮箱');return}const status=$('#cloudAuthStatus');status.textContent='正在发送登录链接…';const{error}=await supabaseClient.auth.signInWithOtp({email,options:{emailRedirectTo:location.href.split('#')[0]}});status.textContent=error?`发送失败：${error.message}`:'登录链接已发送，请打开邮箱完成登录。';if(!error)showToast('登录链接已发送到邮箱')}
+async function signOutCloud(){if(supabaseClient)await supabaseClient.auth.signOut();cloudUser=null;updateCloudAuthUI();showToast('已退出云端登录')}
 function readCollab(){try{const value=JSON.parse(banbuStorage.getItem(COLLAB_KEY)||'null');return value&&typeof value==='object'?value:{}}catch{return{}}}
 function collabDocKey(){return state.libraryId||state.title||'current'}
 function collabData(){const key=collabDocKey();let value=readCollab();if(value.docKey!==key||!value.rows)value={docKey:key,rows:{},revisions:[]};state.segments.forEach((item,index)=>{if(!value.rows[index])value.rows[index]={a:item.type||'X',b:item.type||'X',c:item.type||'X',approved:'',status:'待审核',note:''}});return value}
@@ -669,6 +685,7 @@ document.addEventListener('change',event=>{
 $('#protectStorage').onclick=()=>banbuStorage.protect();$('#exportImage').onclick=exportImage;
 $('#chooseFile').onclick=()=>$('#fileInput').click();$('#fileInput').onchange=event=>importDocument(event.target.files[0]);$('#openOnePageImport').onclick=openOnePageImport;$('#chooseOnePageFile').onclick=()=>$('#onePageFileInput').click();$('#onePageFileInput').onchange=event=>importOnePageDocument(event.target.files[0]);$('#applyOnePageImport').onclick=applyImportedOnePage;$('#loadExample').onclick=()=>{$('#draftInput').value=sample;pendingImportedSegments=null;state.sourceName='示例稿件';$('#ingestTitle').value='具身智能如何进入真实家庭';$('#ingestCompany').value='斜跃智能';$('#ingestSector').value='具身智能';$('#ingestAccount').value='示例来源';$('#ingestOwnership').value='内部';$('#ingestRole').value='内部表达';$('#ingestUrl').value=''};$('#createAnalysis').onclick=createAnalysis;$('#autoAnalyze').onclick=autoAnalyze;$('#openTable').onclick=()=>showWorkflow('table');$('#copyMatrix').onclick=()=>copyMatrixTable();$('#clearAuto').onclick=clearAuto;$('#openOnePage').onclick=renderOnePage;$('#exportWord').onclick=exportWord;$('#exportPdf').onclick=exportPdf;$('#copyOnePage').onclick=copyOnePage;$('#restoreOnePageSections').onclick=()=>{syncOnePageEdits();state.onePageHiddenSections=[];renderOnePage();showToast('已恢复所有 One Page 栏目')};$('#saveProject').onclick=exportProject;$('#loadProject').onclick=()=>$('#projectInput').click();$('#openLibrary').onclick=openLibrary;$('#mobileOpenLibrary').onclick=openLibrary;$('#openCorpus').onclick=openCorpus;$('#openCorpusSide').onclick=openCorpus;$('#mobileOpenCorpus').onclick=openCorpus;$('#saveSelectedCorpus').onclick=saveSelectedToCorpus;$('#saveMatrixCorpus').onclick=saveSelectedToCorpus;$('#corpusSearch').oninput=renderCorpus;$('#corpusTypeFilter').onchange=renderCorpus;$('#corpusSectorFilter').onchange=renderCorpus;$('#corpusOwnershipFilter').onchange=renderCorpus;$('#exportCorpus').onclick=exportCorpusData;$('#importCorpus').onclick=()=>$('#corpusInput').click();$('#corpusInput').onchange=event=>importCorpusData(event.target.files[0]);$('#exportAllData').onclick=exportAllData;$('#exportAllDataCorpus').onclick=exportAllData;$('#importAllData').onclick=()=>$('#backupInput').click();$('#importAllDataCorpus').onclick=()=>$('#backupInput').click();$('#backupInput').onchange=event=>importAllData(event.target.files[0]);$('#addWritingFact').onclick=addWritingFact;$('#addNicheRow').onclick=addNicheRow;$('#generateWritingOutline').onclick=generateWritingOutline;$('#insertWritingCorpus').onclick=insertWritingCorpus;$('#copyWritingDraft').onclick=copyWritingDraft;$('#exportWritingWord').onclick=exportWritingWord;$('#mobileSaveProject').onclick=exportProject;$('#mobileLoadProject').onclick=()=>$('#projectInput').click();$('#projectInput').onchange=event=>importProject(event.target.files[0]);$('#mobileMenu').onclick=()=>document.querySelector('.inspector').scrollIntoView({behavior:'smooth'});
 $('#openCollaboration').onclick=openCollaboration;$('#openCollaborationSide').onclick=openCollaboration;$('#collabLoadCurrent').onclick=loadCurrentToCollab;$('#collabClearDraft').onclick=clearCollabDraft;$('#collabApproveAll').onclick=approveConsensus;
+$('#openCloudAuth').onclick=()=>{$('#cloudAuthModal').classList.add('show');updateCloudAuthUI()};$('#sendCloudMagicLink').onclick=sendCloudMagicLink;$('#cloudLogout').onclick=signOutCloud;initCloud();
 document.querySelectorAll('.modal-backdrop').forEach(modal=>modal.addEventListener('click',event=>{if(event.target===modal)closeModals()}));
 async function seedPublishedWorkspace(){
   if(readLibrary().length||banbuStorage.getItem('banbu-cqsr-project'))return false;
