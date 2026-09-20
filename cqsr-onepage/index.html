@@ -267,9 +267,9 @@
 
 <div class="modal-backdrop" id="cloudAuthModal">
   <div class="modal ingest">
-    <div class="modal-head"><div><h2>团队云端登录</h2><p>登录后才能访问团队协作空间。网页只保存登录会话，不保存邮箱密码。</p></div><button class="close" data-close>×</button></div>
-    <div class="field"><label>团队邮箱</label><input id="cloudEmail" type="email" placeholder="name@company.com"></div>
-    <p class="hint" id="cloudAuthStatus">输入邮箱后发送一次性登录链接。</p>
+    <div class="modal-head"><div><h2>团队云端登录</h2><p>输入成员邮箱即可邀请登录。支持飞书邮箱（@feishu.cn、@larksuite.com）和企业自定义域名。</p></div><button class="close" data-close>×</button></div>
+    <div class="field"><label>成员邮箱</label><input id="cloudEmail" type="email" placeholder="name@feishu.cn"></div>
+    <p class="hint" id="cloudAuthStatus">Supabase 会向该邮箱发送一次性登录链接，打开邮件即可加入。</p>
     <div class="drop"><span style="flex:1"></span><button class="btn primary" id="sendCloudMagicLink">发送登录链接</button><button class="btn hidden" id="cloudLogout">退出登录</button></div>
   </div>
 </div>
