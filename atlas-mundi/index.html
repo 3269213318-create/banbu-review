@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Atlas Mundi · 世界地理探索</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&family=Noto+Serif+SC:wght@600;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand"><span class="brand-glyph">◎</span><div><strong>atlas mundi</strong><small>世界地理探索</small></div></div>
+      <div class="side-caption">DISCOVER</div>
+      <nav><button class="nav-link active" data-view="world"><span>◒</span>世界地图</button><button class="nav-link" data-view="china"><span>▱</span>中国地图</button><button class="nav-link" data-view="globe"><span>◉</span>地球仪</button></nav>
+      <div class="side-rule"></div><div class="side-caption">YOUR PLACES</div>
+      <div class="saved-list"><button class="saved-place active-place" data-country="China"><span class="place-dot amber"></span><span>中国</span><small>东亚</small></button><button class="saved-place" data-country="Japan"><span class="place-dot coral"></span><span>日本</span><small>东亚</small></button><button class="saved-place" data-country="France"><span class="place-dot blue"></span><span>法国</span><small>欧洲</small></button></div>
+      <div class="sidebar-foot"><span class="tiny-globe">◌</span><p>地图信息持续更新<br><small>v1.0 · 2026</small></p></div>
+    </aside>
+    <main class="main">
+      <header class="topbar"><div class="crumb"><span>探索</span><i>/</i><strong id="viewName">世界地图</strong></div><div class="top-actions"><label class="search"><span>⌕</span><input id="searchInput" placeholder="搜索国家、城市或产业" /></label><button class="round-icon" title="语言">中</button><button class="user-pill"><span>林</span>我的探索 <b>⌄</b></button></div></header>
+
+      <section class="view active" id="worldView">
+        <div class="hero-heading"><div><p class="eyebrow">A LIVING ATLAS / 01</p><h1>从一张地图，<br><em>看见一个国家。</em></h1><p class="subhead">探索地理位置背后的产业、人文与气候，<br>把下一次旅行变成一次真正的理解。</p></div><div class="hero-stat"><strong>196</strong><span>个国家<br>可探索</span></div></div>
+        <div class="world-layout">
+          <section class="map-card"><div class="map-toolbar"><div><span class="map-kicker">WORLD / 2026</span><h2>世界概览</h2></div><div class="map-controls"><button class="map-control active" data-map="world">世界</button><button class="map-control" data-map="china">中国</button><button class="map-control" data-map="globe">3D 地球</button></div></div><div class="map-canvas" id="worldMap"><div class="map-grid"></div><svg viewBox="0 0 900 470" aria-label="世界地图示意图"><path class="continent" d="M84 128l32-35 65-20 63 11 31 35-13 31-38 11-12 31-54 2-27-22-35-9z"/><path class="continent" d="M226 197l40 3 24 36-19 44-15 65-28 43-22-33 7-52-23-39 13-38z"/><path class="continent" d="M427 110l50-17 39 15 18 32-21 25 12 39-33 29-36-9-31-38 5-40z"/><path class="continent" d="M510 178l66-25 86 8 42 30-28 39-46 8-24 38-47-14-20-30-39-4-15-23z"/><path class="continent" d="M625 269l53 12 27 38-23 30-51-7-25-32z"/><path class="continent" d="M787 357l30 8 12 27-36 8-19-18z"/><g class="country-pins"><button class="map-pin pin-china" data-country="China"><circle cx="624" cy="213" r="8"/><text x="638" y="217">中国</text></button><button class="map-pin pin-japan" data-country="Japan"><circle cx="692" cy="237" r="7"/><text x="705" y="241">日本</text></button><button class="map-pin pin-france" data-country="France"><circle cx="471" cy="153" r="7"/><text x="484" y="157">法国</text></button><button class="map-pin pin-india" data-country="India"><circle cx="570" cy="276" r="7"/><text x="582" y="280">印度</text></button><button class="map-pin pin-australia" data-country="Australia"><circle cx="759" cy="356" r="7"/><text x="771" y="360">澳大利亚</text></button><button class="map-pin pin-brazil" data-country="Brazil"><circle cx="300" cy="291" r="7"/><text x="312" y="295">巴西</text></button></g></svg><div class="map-legend"><span><i class="legend-dot warm"></i>热门探索</span><span><i class="legend-dot cool"></i>文化目的地</span></div></div><div class="map-footer"><span>点击地图上的国家标记</span><span><b id="mapZoom">100%</b> <button id="zoomOut">−</button><button id="zoomIn">＋</button></span></div></section>
+          <aside class="detail-card" id="detailCard"></aside>
+        </div>
+      </section>
+
+      <section class="view" id="chinaView"><div class="section-heading"><p class="eyebrow">CHINA / 34 PROVINCES</p><h1>中国，<em>从地理读懂生活。</em></h1><p>点击省份，查看当地的支柱产业、人文气质与四季气候。</p></div><div class="china-layout"><section class="china-map-card map-card"><div class="map-toolbar"><div><span class="map-kicker">PROVINCES</span><h2>中国省域</h2></div><span class="map-note">已标记 8 个目的地</span></div><div class="china-map" id="chinaMap"><div class="china-shape"></div><button class="province p-bj" data-country="Beijing">北京</button><button class="province p-sh" data-country="Shanghai">上海</button><button class="province p-gd" data-country="Guangdong">广东</button><button class="province p-sc" data-country="Sichuan">四川</button><button class="province p-xj" data-country="Xinjiang">新疆</button><button class="province p-yun" data-country="Yunnan">云南</button><button class="province p-zj" data-country="Zhejiang">浙江</button><div class="china-compass">N</div></div><div class="map-footer"><span>选择一个省份查看档案</span><span class="map-note">数据按省级行政区展示</span></div></section><aside class="detail-card" id="chinaDetail"></aside></div></section>
+
+      <section class="view" id="globeView"><div class="section-heading"><p class="eyebrow">ORBIT / INTERACTIVE GLOBE</p><h1>把世界，转到眼前。</h1><p>拖动经纬线，点击地球上的目的地。</p></div><div class="globe-layout"><section class="globe-stage"><div class="globe"><div class="globe-land land-asia"></div><div class="globe-land land-europe"></div><div class="globe-land land-america"></div><div class="globe-pin gp-china" data-country="China">●</div><div class="globe-pin gp-france" data-country="France">●</div><div class="globe-pin gp-japan" data-country="Japan">●</div></div><div class="globe-shadow"></div><div class="orbit-line orbit-one"></div><div class="orbit-line orbit-two"></div><span class="globe-label">N 35° 41′ · E 139° 41′</span></section><aside class="detail-card" id="globeDetail"></aside></div></section>
+    </main>
+  </div>
+  <div class="toast" id="toast"></div><script src="app.js"></script>
+</body></html>
