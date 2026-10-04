@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#15201e" />
+  <title>时序养生 · Meridian Rhythm</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Noto+Serif+SC:wght@500;600;700;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand-mark"><span>时</span><div><strong>时序</strong><small>养生节律</small></div></div>
+      <div class="sidebar-label">导航</div>
+      <nav class="main-nav" aria-label="主导航">
+        <button class="nav-item active" data-view="today"><span class="nav-icon">◒</span><span>今日节律</span><b>01</b></button>
+        <button class="nav-item" data-view="clock"><span class="nav-icon">◷</span><span>经络时钟</span></button>
+        <button class="nav-item" data-view="checkins"><span class="nav-icon">✓</span><span>打卡记录</span><b>7</b></button>
+      </nav>
+      <div class="sidebar-rule"></div>
+      <div class="sidebar-label">我的设置</div>
+      <button class="nav-item muted" data-view="alarms"><span class="nav-icon">♩</span><span>五行闹铃</span></button>
+      <button class="nav-item muted" data-view="profile"><span class="nav-icon">⌾</span><span>个人节律</span></button>
+      <div class="sidebar-bottom">
+        <div class="moon-note"><span class="moon">☾</span><div><strong>子时将至</strong><small>还有 01:18:42</small></div></div>
+        <div class="mini-user"><span class="avatar">林</span><div><strong>林知遥</strong><small>连续 7 天</small></div><span class="dots">···</span></div>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <div class="breadcrumb"><span>我的节律</span><i>/</i><strong id="pageTitle">今日节律</strong></div>
+        <div class="top-actions"><span class="date-chip"><span class="live-dot"></span><span id="todayDate">2026年10月04日 · 周日</span></span><button class="icon-btn" title="通知">♢<em></em></button><button class="profile-btn"><span class="avatar small">林</span><span>林知遥</span><span class="chevron">⌄</span></button></div>
+      </header>
+
+      <section id="view-today" class="view active-view">
+        <div class="welcome-row"><div><p class="eyebrow">SUNDAY / DAY 07</p><h1>把今天，交给身体的节拍。</h1><p class="lede">循着十二时辰，把每一次呼吸、饮水和休息放回它该在的位置。</p></div><div class="streak-badge"><span class="streak-number">07</span><span>连续<br>打卡日</span></div></div>
+        <div class="dashboard-grid">
+          <section class="clock-card panel">
+            <div class="panel-head"><div><span class="section-kicker">CURRENT MERIDIAN</span><h2 id="currentTitle">午时 · 心经当令</h2></div><button class="round-action" id="rotateClock" title="转动时辰盘">↻</button></div>
+            <div class="clock-stage"><div class="clock-orbit orbit-outer"></div><div class="clock-orbit orbit-inner"></div><div class="clock-face" id="clockFace"><div class="clock-center"><span id="clockTime">11:42</span><small>本地时间</small></div><div class="clock-hand hour"></div><div class="clock-hand minute"></div><div class="clock-tick tick-1"></div><div class="clock-tick tick-2"></div><div class="clock-tick tick-3"></div><div class="clock-tick tick-4"></div><div class="clock-tick tick-5"></div><div class="clock-tick tick-6"></div><div class="clock-tick tick-7"></div><div class="clock-tick tick-8"></div><div class="clock-tick tick-9"></div><div class="clock-tick tick-10"></div><div class="clock-tick tick-11"></div><div class="clock-tick tick-12"></div></div><div class="orbit-label label-top">子时<br><small>胆</small></div><div class="orbit-label label-right">卯时<br><small>大肠</small></div><div class="orbit-label label-bottom">午时<br><small>心</small></div><div class="orbit-label label-left">酉时<br><small>肾</small></div></div>
+            <div class="current-insight"><div class="element-chip fire"><span class="element-dot"></span>火 · 徵音</div><p>现在适合放下屏幕，闭眼 5 分钟。让心神从午后的高频里慢慢沉下来。</p><button class="text-btn" id="playCurrent">试听心经闹铃 <span>▶</span></button></div>
+          </section>
+          <section class="schedule-card panel"><div class="panel-head"><div><span class="section-kicker">TODAY'S RHYTHM</span><h2>今日节律</h2></div><button class="more-btn" id="viewAll">查看全部 <span>↗</span></button></div><div class="timeline" id="timeline"></div></section>
+          <section class="checkin-card panel"><div class="panel-head"><div><span class="section-kicker">DAILY CHECK-IN</span><h2>今天的身体</h2></div><span class="completion" id="completion">3 / 5</span></div><p class="checkin-intro">每一个小动作，都是给身体的一封回信。</p><div class="checkin-list" id="checkinList"></div><div class="progress-track"><span id="progressBar"></span></div></section>
+          <section class="sound-card panel"><div class="sound-art"><div class="sound-ring ring-a"></div><div class="sound-ring ring-b"></div><div class="sound-note">徵</div><div class="sound-waves"><i></i><i></i><i></i><i></i><i></i></div></div><div class="sound-copy"><span class="section-kicker">FIVE ELEMENT ALARM</span><h2>一段为心而作的声音</h2><p>火 · 徵调 · 琵琶<br><span>专注 / 午时 11:00 — 13:00</span></p><div class="sound-controls"><button class="play-btn" id="playHeart" aria-label="播放心经闹铃">▶</button><div class="sound-meta"><strong id="soundStatus">心经 · 徵调</strong><small>今日 11:55 响起</small></div><label class="switch"><input type="checkbox" checked id="alarmToggle"><span></span></label></div></div></section>
+        </div>
+        <footer class="disclaimer">传统时辰与五行音乐仅作日常节律参考，不替代医疗诊断或治疗 <span>·</span> <button id="openInfo">了解原理</button></footer>
+      </section>
+
+      <section id="view-clock" class="view"><div class="page-heading"><span class="section-kicker">TWELVE MERIDIANS</span><h1>经络时钟</h1><p>把一天切成十二个呼吸的段落，找到身体此刻的指针。</p></div><div class="full-clock-panel panel"><div class="large-clock" id="largeClock"><div class="large-clock-core"><span>12</span><small>时辰轮转</small></div><div class="large-clock-hand"></div></div><div class="meridian-list" id="meridianList"></div></div></section>
+      <section id="view-checkins" class="view"><div class="page-heading"><span class="section-kicker">YOUR PRACTICE</span><h1>打卡记录</h1><p>连续而轻盈地照顾自己，今天也算数。</p></div><div class="stats-row"><div class="stat panel"><span>本周完成</span><strong>24 <small>/ 35</small></strong><i>↗ 12%</i></div><div class="stat panel"><span>最长连续</span><strong>14 <small>天</small></strong><i>个人最佳</i></div><div class="stat panel"><span>本月音频</span><strong>86 <small>分钟</small></strong><i>徵调最多</i></div></div><div class="history-panel panel"><div class="panel-head"><div><span class="section-kicker">OCTOBER 2026</span><h2>十月节律</h2></div><div class="legend"><span class="legend-dot done"></span>已完成 <span class="legend-dot partial"></span>部分完成</div></div><div class="calendar-grid" id="calendarGrid"></div></div></section>
+      <section id="view-alarms" class="view"><div class="page-heading"><span class="section-kicker">SOUND LIBRARY</span><h1>五行闹铃</h1><p>每个时辰，都有一件适合叫醒你的乐器。</p></div><div class="alarm-grid" id="alarmGrid"></div></section>
+      <section id="view-profile" class="view"><div class="page-heading"><span class="section-kicker">YOUR RHYTHM</span><h1>个人节律</h1><p>告诉我们你想如何被温柔提醒。</p></div><div class="profile-panel panel"><div class="profile-hero"><span class="avatar large">林</span><div><h2>林知遥</h2><p>已陪伴身体 7 天</p></div><button class="outline-btn">编辑资料</button></div><div class="preference-row"><div><strong>夜间静默</strong><span>22:30 后只保留振动提醒</span></div><label class="switch"><input type="checkbox" checked><span></span></label></div><div class="preference-row"><div><strong>五行音乐</strong><span>按当令经络自动推荐声音</span></div><label class="switch"><input type="checkbox" checked><span></span></label></div></div></section>
+    </main>
+  </div>
+  <div class="toast" id="toast">已记录这一刻</div>
+  <div class="modal-backdrop" id="infoModal"><div class="info-modal"><button class="modal-close" id="closeInfo">×</button><span class="section-kicker">WHY IT WORKS</span><h2>让提醒有一点文化，也有一点陪伴。</h2><p>页面把传统十二时辰、五行与器乐音色做成可操作的日常提示。每个音色都是用浏览器合成的短乐句，方便试听和切换，不需要上传个人健康数据。</p><div class="info-rule"></div><small>请把它当作生活节律工具，而不是医疗建议。</small></div></div>
+  <script src="app.js"></script>
+</body>
+</html>
